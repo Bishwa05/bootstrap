@@ -6,21 +6,19 @@ Created on Sat Aug  3 12:41:37 2019
 @author: i501895
 """
 
-# Import pandas and cars.csv
+# Import pandas and csv file
 from datetime import datetime, timedelta
 import pandas as pd
 #from matplotlib inline
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
+#import seaborn as sns
 #from __future__ import division
 
-import chart_studio.plotly as py
+#import chart_studio.plotly as py
 from plotly.offline import plot
 import plotly.graph_objs as go
 
-#inititate Plotly
-pyoff.init_notebook_mode()
 
 #load our data from CSV
 tx_data = pd.read_csv('../data/sample_data.csv')
@@ -102,7 +100,7 @@ def order_cluster(cluster_field_name, target_field_name,df,ascending):
     return df_final
 
 tx_user = order_cluster('RecencyCluster', 'Recency',tx_user,False)
-print(tx_user['RecencyCluster'])
+#print(tx_user['RecencyCluster'])
 
 
 #get order counts for each user and create a dataframe with it
@@ -112,7 +110,7 @@ tx_frequency.columns = ['customer_id','Frequency']
 #add this data to our main dataframe
 tx_user = pd.merge(tx_user, tx_frequency, on='customer_id')
 
-print(tx_frequency)
+#print(tx_frequency)
 
 #plot the histogram
 plot_data = [
@@ -179,6 +177,8 @@ tx_user.groupby('OverallScore')['Recency','Frequency','Revenue'].mean()
 tx_user['Segment'] = 'Low-Value'
 tx_user.loc[tx_user['OverallScore']>2,'Segment'] = 'Mid-Value' 
 tx_user.loc[tx_user['OverallScore']>4,'Segment'] = 'High-Value'
+
+#print(tx_user)
 
 #Revenue vs Frequency
 #plotRevenueFrequency(tx_user)
