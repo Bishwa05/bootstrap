@@ -1,4 +1,5 @@
 import flask
+import pandas as pd
 from flask import request, jsonify, render_template
 
 app = flask.Flask(__name__)
@@ -58,6 +59,37 @@ def customerProductRecoBySocietyID():
         {'custid': id * 4, 'productid': id * 1004, 'recurring': 'Monthly'}
     ]
     return jsonify(products)
+
+# A route to return customer product prediction / recommendation by society ID
+@app.route('/mbh/v1/orders/bysociety', methods=['GET'])
+def orderRevenueBySocietyID():
+    if 'societyid' in request.args:
+        id = int(request.args['societyid'])
+
+    tx_data = pd.read_csv('../data/sample_data.csv')
+    newdf = tx_data[['subcategory_id', 'total_cost']]
+    newdf.columns = ['subcatid', 'totrev']
+    getsum = newdf.groupby(['subcatid']).sum()
+    print(getsum) # Total revenue for each subcategory
+    #orderdf = newdf.groupby(['subcategory_id']).count()
+    # print(orderdf)#Total no of orders per sub category
+
+    #final = pd.merge(getsum, orderdf, on='subcategory_id')
+    #final.columns = ["Total_Revenue", "Total_Orders"]
+    #print(final)  # Count of Orders per sub category
+    #final['Total_Orders'].loc[final['Total_Orders'] >= 1] = final['Total_Revenue'] / final['Total_Orders']
+    #print(final)  # AOV per sub category
+
+    orders = [
+        {'subcatid': id * 1, 'totrev': id * 1001 },
+        {'subcatid': id * 2, 'totrev': id * 1002 },
+        {'subcatid': id * 3, 'totrev': id * 1003},
+        {'subcatid': id * 4, 'totrev': id * 1004},
+        {'subcatid': id * 5, 'totrev': id * 1005},
+        {'subcatid': id * 6, 'totrev': id * 1006},
+        {'subcatid': id * 7, 'totrev': id * 1007},
+    ]
+    return jsonify(getsum.to_json ())
 
 app.run()
 
