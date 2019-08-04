@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" type="text/javascript"></script>
+</head>
+<body>
+<h2 align=center>Insights and AOV recommendation</h2><hr>
+    
+    <a href="http://127.0.0.1:5000/mbh/v1/insights">Insights</a>
+    <a href="http://127.0.0.1:5000/mbh/v1/aov">AOV</a>
+    <br>
+
+    <h3>Recommend product for customer based on history purchase date</h3>
+    Cities:<span id="citiesRef"></span>
+    <br /><br />
+    Societies:<span id="socitiesRef"></span>
+    
+    <br>
+    <div id="cusResults">
+    </div>
+
+    <script type="text/javascript">
+        var allCitiesEndpoint = "http://127.0.0.1:5000/mbh/v1/cities/all";
+        var societyEndpoint = "http://127.0.0.1:5000/mbh/v1/societies/bycityid";
+        var customerProdPredictEndpoint = "http://127.0.0.1:5000/mbh/v1/customers/bysocietyid";
+        
+        function renderDropDown(values, htmlRef, changeEvent) {
+            if(values == null) return;
+            var selEleHTML = "<select id='"+htmlRef+"Sel'>";
+            for(var i = 0; i<values.length; i++) {
+                selEleHTML = selEleHTML + '<option>' + values[i].id + '</option>';
+            }
+            selEleHTML = selEleHTML + "</select>";
+
+            $("#"+htmlRef).html(selEleHTML);
+            $("#"+htmlRef+"Sel").selectmenu({
+                change:changeEvent
+            });
+        }
+
+        function loadDropDownValues(endpoint, dt, htmlRef, changeEvent) {
+            $.ajax({
+                url: endpoint,
+                method:"GET",
+                data: dt,
+                success: function(result) {
+                    renderDropDown(result, htmlRef, changeEvent);
+                }
+            });
+        }
+        
+        var socitiesChange = function(event, data) {
+
+            $.ajax({
+                url: customerProdPredictEndpoint,
+                method:"GET",
+                data: "societyid="+data.item.value,
+                success: function(result) {
+                    var tabVal = "<table class='display' id='cusTbl'>";
+                    tabVal += "<tr><th>Customer ID</th><th>Product ID</th><th>Recurring type</th></tr>";
+                    for(var i=0; i<result.length; i++) {
+                        tabVal += "<tr><td>" + result[i].custid + "</td><td>" + result[i].productid + "</td><td>" + result[i].recurring + "</td></tr>"
+                    }
+                    tabVal += "</table>"
+                    $("#cusResults").html(tabVal);
+                    $('#cusTbl').DataTable();
+                }
+            });
+        }
+        
+        var citiesChange = function(event, data) {
+            loadDropDownValues(societyEndpoint, "cityid="+data.item.value, "socitiesRef", socitiesChange);
+        }
+        
+        loadDropDownValues(allCitiesEndpoint, "", "citiesRef", citiesChange);
+        
+        
+    </script>
+</body>
+</html>
