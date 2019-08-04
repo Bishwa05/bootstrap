@@ -21,7 +21,7 @@ import plotly.graph_objs as go
 
 
 #load our data from CSV
-tx_data = pd.read_csv('../data/sample_data.csv')
+tx_data = pd.read_csv('../data/hackathon_data.csv')
 
 #convert the string date field to datetime
 #tx_data['InvoiceDate'] = pd.to_datetime(tx_data['InvoiceDate'])
@@ -156,7 +156,7 @@ plot_layout = go.Layout(
         title='Monetary Value'
     )
 fig = go.Figure(data=plot_data, layout=plot_layout)
-#plot(fig)
+plot(fig)
 
 #apply clustering
 kmeans = KMeans(n_clusters=4)
@@ -181,11 +181,11 @@ tx_user.loc[tx_user['OverallScore']>4,'Segment'] = 'High-Value'
 #print(tx_user)
 
 #Revenue vs Frequency
-#plotRevenueFrequency(tx_user)
+plotRevenueFrequency(tx_user)
 
 #Revenue Recency
-#plotRevenueRecency(tx_user)
+plotRecencyRecency(tx_user)
 
 # Revenue vs Frequency
-#plotRevenueFrequency(tx_user)
+plotRevenueFrequency(tx_user)
 

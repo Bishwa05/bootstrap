@@ -55,7 +55,7 @@ def plotRevenueRecency(tx_user):
     plot(fig)
     
 
-def plotRevenueFrequency(tx_user):
+def plotRecencyFrequency(tx_user):
     tx_graph = tx_user.query("Revenue < 50000 and Frequency < 2000")
     plot_data = [
         go.Scatter(
