@@ -27,7 +27,7 @@ def api_all():
 @app.route('/mbh/v1/socity/details', methods=['GET'])
 def api_socity_details():
     if 'storeid' in request.args:
-    id = int(request.args['societyid'])
+        id = int(request.args['societyid'])
 #load our data from CSV
     tx_data = pd.read_csv('../data/sample_data.csv')
 
@@ -46,7 +46,7 @@ def api_socity_details():
 @app.route('/mbh/v1/store/details', methods=['GET'])
 def api_store_details():
     if 'storeid' in request.args:
-    id = int(request.args['storeid'])
+        id = int(request.args['storeid'])
 #load our data from CSV
     tx_data = pd.read_csv('../data/sample_data.csv')
     newdf = tx_data[['store_id','society_id','category_id','subcategory_id','product_id']]
@@ -64,7 +64,7 @@ def api_store_details():
 @app.route('/mbh/v1/city/details', methods=['GET'])
 def api_city_details():
     if 'cityid' in request.args:
-    id = int(request.args['cityid'])
+        id = int(request.args['cityid'])
 #load our data from CSV
     tx_data = pd.read_csv('../data/sample_data.csv')
     newdf = tx_data[['city_id','manufacturer_id','society_id','store_id']]
