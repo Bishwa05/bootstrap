@@ -1,7 +1,8 @@
 import flask
 import pandas as pd
 from flask import request, jsonify, render_template
-
+import predictDate as pd
+import findUniqueCities as uc
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
@@ -30,6 +31,7 @@ def api_all():
         {'id': 3},
         {'id': 4}
     ]
+    print(uc.findUniqueCities())
     return jsonify(cities)
 
 # A route to get the socities by city ID
@@ -51,12 +53,13 @@ def societyByCityID():
 def customerProductRecoBySocietyID():
     if 'societyid' in request.args:
         id = int(request.args['societyid'])
-
+    products_tuple=pd.predict_next_purchase_date(1120112)
+    print (products_tuple)
     products = [
-        {'custid' : id*1, 'productid': id * 1001, 'recurring': 'Monthly'},
-        {'custid' : id* 2, 'productid': id * 1002, 'recurring': 'Weekly'},
-        {'custid': id * 3, 'productid': id * 1003, 'recurring': 'Daily'},
-        {'custid': id * 4, 'productid': id * 1004, 'recurring': 'Monthly'}
+        {'custid' : products_tuple[0][0], 'productid': products_tuple[0][1], 'recurring': products_tuple[0][2]}
+        # {'custid' : id* 2, 'productid': id * 1002, 'recurring': 'Weekly'},
+        # {'custid': id * 3, 'productid': id * 1003, 'recurring': 'Daily'},
+        # {'custid': id * 4, 'productid': id * 1004, 'recurring': 'Monthly'}
     ]
     return jsonify(products)
 
